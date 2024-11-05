@@ -4,7 +4,6 @@ const router = new express.Router();
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const { authenticateToken, authorizeRole } = require("../middleware/auth");
 
 router.post("/createUser", async (req, res) => {
   const user = new User(req.body);

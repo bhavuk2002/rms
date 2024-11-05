@@ -36,4 +36,15 @@ User.addHook("beforeCreate", async (user) => {
   }
 });
 
+User.prototype.toJSON = function () {
+  const user = this.get();
+
+  // removing sensitive or unwanted information
+  delete user.password;
+  delete user.createdAt;
+  delete user.updatedAt;
+
+  return user;
+};
+
 module.exports = User;
