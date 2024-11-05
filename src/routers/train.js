@@ -97,11 +97,9 @@ router.get(
   authorizeRole(["user", "admin"]),
   async (req, res) => {
     try {
-      console.log(req.user.id);
       const bookings = await Booking.findAll({
         where: { userId: req.user.id },
       });
-      // const booking = await Booking.findByPk(bookingId);
       if (!bookings) {
         return res
           .status(200)
