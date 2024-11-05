@@ -2,13 +2,12 @@ const app = require("./app");
 
 const port = process.env.PORT || 3000;
 
-const db = require("../models");
-const sequelize = require("../util/database");
+const sequelize = require("./util/database");
 
 sequelize
   .sync()
   .then((result) => {
-    console.log("Database updated");
+    console.log("Database Syncronised");
   })
   .catch((e) => {
     console.log(e);

@@ -1,4 +1,5 @@
-const User = require("../../models/User");
+require("dotenv").config();
+const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 
 const authenticateToken = async (req, res, next) => {
@@ -10,7 +11,7 @@ const authenticateToken = async (req, res, next) => {
         .status(401)
         .json({ message: "Access Denied: No Token Provided" });
     }
-    const decoded = jwt.verify(token, "thisismysecret"); // Use your JWT secret key
+    const decoded = jwt.verify(token, process.env.JWT_TOKEN_SECRET); // Use your JWT secret key
     req.user = decoded; // Attach the user payload to the request object
     next(); // Proceed to the next middleware or route handler
   } catch (error) {
@@ -29,7 +30,7 @@ const authorizeRole = (roles = []) => {
   };
 };
 
-const apiKey = process.env.ADMIN_API_KEY || "akebfakebfaawef2i1b1o";
+const apiKey = process.env.ADMIN_API_KEY;
 
 const verifyAdminApiKey = (req, res, next) => {
   // Check if the API key is provided in the headers

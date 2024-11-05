@@ -1,6 +1,7 @@
+require("dotenv").config();
 const express = require("express");
 const router = new express.Router();
-const User = require("../../models/User");
+const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { authenticateToken, authorizeRole } = require("../middleware/auth");
@@ -12,7 +13,7 @@ router.post("/createUser", async (req, res) => {
 
     const token = jwt.sign(
       { id: user.id, username: user.username, role: user.role },
-      "thisismysecret"
+      process.env.JWT_TOKEN_SECRET
     );
     res.status(201).send({ user, token });
   } catch (error) {
@@ -25,18 +26,18 @@ router.post("/login", async (req, res) => {
     const user = await User.findOne({ where: { username: req.body.username } });
 
     if (!user) {
-      throw new Error("Unable to login");
+      return res.status(400).json({ message: "Unable to login" });
     }
 
     const isValid = await bcrypt.compare(req.body.password, user.password);
 
     if (!isValid) {
-      throw new Error("Unable to login");
+      return res.status(400).json({ message: "Unable to login" });
     }
 
     const token = jwt.sign(
       { id: user.id, username: user.username, role: user.role },
-      "thisismysecret"
+      process.env.JWT_TOKEN_SECRET
     );
 
     res.status(200).send({ user, token });

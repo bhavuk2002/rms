@@ -1,8 +1,8 @@
 const express = require("express");
 const router = new express.Router();
-const Train = require("../../models/Train");
-const Booking = require("../../models/Booking");
-const { bookSeat } = require("../../services/booking");
+const Train = require("../models/Train");
+const Booking = require("../models/Booking");
+const { bookSeat } = require("../services/booking");
 const {
   authenticateToken,
   authorizeRole,
