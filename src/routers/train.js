@@ -20,7 +20,7 @@ router.post(
       await train.save();
       res.status(201).send(train);
     } catch (error) {
-      res.status(400).send(error);
+      res.status(500).send(error);
     }
   }
 );
@@ -50,23 +50,24 @@ router.get(
       const { trainId } = req.body;
       const userId = req.user.id;
       if (!trainId) {
-        return res
-          .status(400)
-          .json({ success: false, message: "Train ID is required" });
+        return res.status(400).json({ message: "Train ID is required" });
       }
 
       const result = await bookSeat(userId, trainId);
 
       if (result.success) {
-        res.status(200).json({ success: true, message: result.message });
+        res.status(200).json({
+          message: result.message,
+          bookingId: result.bookingId,
+          trainId: result.trainId,
+          seatNumber: result.seatNumber,
+        });
       } else {
-        res.status(400).json({ success: false, message: result.message });
+        res.status(400).json({ message: result.message });
       }
     } catch (error) {
       console.error("Error booking seat:", error);
-      res
-        .status(500)
-        .json({ success: false, message: "Internal server error" });
+      res.status(500).json({ message: "Internal server error" });
     }
   }
 );
@@ -78,7 +79,6 @@ router.get(
   authorizeRole(["user", "admin"]),
   async (req, res) => {
     const bookingId = req.params.bookingId;
-    console.log(bookingId);
     try {
       const booking = await Booking.findByPk(bookingId);
       if (!booking) {

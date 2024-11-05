@@ -21,14 +21,20 @@ async function bookSeat(userId, trainId) {
     await train.save({ transaction });
 
     // Create a booking record
-    await Booking.create(
+    const booking = await Booking.create(
       { userId, trainId, seatNumber: train.totalSeats - train.availableSeats },
       { transaction }
     );
 
     // Commit the transaction
     await transaction.commit();
-    return { success: true, message: "Seat booked successfully" };
+    return {
+      success: true,
+      message: "Seat booked successfully",
+      bookingId: booking.id,
+      seatNumber: booking.seatNumber,
+      trainId: booking.trainId,
+    };
   } catch (error) {
     // Rollback the transaction in case of an error
     await transaction.rollback();
